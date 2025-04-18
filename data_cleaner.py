@@ -18,3 +18,14 @@ plt.xlabel('X Label')
 plt.ylabel('Y Label')
 plt.savefig('outputs/plots/basic_scatter.png')
 plt.close()
+
+# 2. Enhanced Scatterplot (with Seaborn)
+plt.figure(figsize=(10, 6))
+sns.scatterplot(
+    data=df,
+    x='column_x',
+    y='column_y',
+    hue='category_column',  # Color by a third variable
+    size='size_column',     # Optional: Vary point sizes
+    palette='viridis'       # Color scheme
+)
