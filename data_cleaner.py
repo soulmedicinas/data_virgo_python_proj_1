@@ -29,3 +29,6 @@ sns.scatterplot(
     size='size_column',     # Optional: Vary point sizes
     palette='viridis'       # Color scheme
 )
+plt.title('Enhanced Scatterplot')
+plt.savefig('outputs/plots/seaborn_scatter.png')
+plt.close()
