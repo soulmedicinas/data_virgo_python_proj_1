@@ -19,6 +19,23 @@ for file in excel_files:
 
 print(f"Loaded {len(all_data)} tables from {len(excel_files)} files")
 
+
+
+# processing workflow
+def clean_data(df):
+    #Generic cleaning function template
+    # 1. Handle missing values
+    df = df.dropna(subset=['key_column'])
+    
+    # 2. Standardize formats
+    df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    
+    # 3. Remove duplicates
+    return df.drop_duplicates()
+
+# Apply cleaning to all tables
+cleaned_data = {name: clean_data(df) for name, df in all_data.items()}
+
 # Load all Excel sheets into a dictionary of DataFrames
 #file_path = "your_data.xlsx"
 #sheets = pd.read_excel(file_path, sheet_name=None)  # Reads all sheets
