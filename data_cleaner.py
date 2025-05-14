@@ -44,6 +44,10 @@ def clean_data(df):
 # Apply cleaning to all tables
 cleaned_data = {name: clean_data(df) for name, df in all_data.items()}
 
+with pd.ExcelWriter('cleaned_combined.xlsx') as writer:
+    for name, df in cleaned_data.items():
+        df.to_excel(writer, sheet_name=name[:31])  # Excel sheet name limit
+
 # Load all Excel sheets into a dictionary of DataFrames
 #file_path = "your_data.xlsx"
 #sheets = pd.read_excel(file_path, sheet_name=None)  # Reads all sheets
