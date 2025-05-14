@@ -19,7 +19,15 @@ for file in excel_files:
 
 print(f"Loaded {len(all_data)} tables from {len(excel_files)} files")
 
+#q1_revenue = all_data['sales_Q1_Revenue']  # Access DataFrame
 
+metcon = all_data['UserId3017457_Metcon_250506.xlsx']
+gymnastics = all_data['UserId3017457_Gymnastics_250506.xlsx']
+pRS = all_data['UserId3017457_PRs_250506.xlsx']
+weightlifting = all_data['UserId3017457_Weightlifting_250506.xlsx']
+weightliftingTotal = all_data['UserId3017457_WeightliftingTotal_250506.xlsx']
+
+sheets = pd.read_excel(metcon, gymnastics, pRS, weightlifting, weightliftingTotal, sheet_name=None)  # Reads all sheets
 
 # processing workflow
 def clean_data(df):
