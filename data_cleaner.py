@@ -3,19 +3,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+data_dir = 'data'
+
 # List all Excel files in your directory
-excel_files = [f for f in os.listdir() if f.endswith('.xlsx') or f.endswith('.xls')]
+excel_files = [f for f in os.listdir('data_dir') if f.endswith('.xlsx') or f.endswith('.xls')]
 
 # Dictionary to store all DataFrames
 all_data = {}
 
 for file in excel_files:
-    # Read all sheets from each file
-    sheets = pd.read_excel(file, sheet_name=None)
-    
-    # Store with filename prefix for clarity
+    file_path = os.path.join('data', file)
+    sheets = pd.read_excel(file_path, sheet_name=None)  # Read all sheets from each file
     for sheet_name, df in sheets.items():
-        all_data[f"{file[:-5]}_{sheet_name}"] = df  # Removes .xlsx extension
+        all_data[f"{file[:-5]}_{sheet_name}"] = df # Removes .xlsx extension
+
 
 print(f"Loaded {len(all_data)} tables from {len(excel_files)} files")
 
