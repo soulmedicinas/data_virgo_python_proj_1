@@ -12,14 +12,17 @@ excel_files = [f for f in os.listdir('data_dir') if f.endswith('.xlsx') or f.end
 all_data = {}
 
 for file in excel_files:
-    file_path = os.path.join('data', file)
+    file_path = os.path.join(data_dir, file)
     sheets = pd.read_excel(file_path, sheet_name=None)  # Read all sheets from each file
     for sheet_name, df in sheets.items():
-        all_data[f"{file[:-5]}_{sheet_name}"] = df # Removes .xlsx extension
-
+        key = f"{file[:-5]}_{sheet_name}" # Removes .xlsx extension
+        all_data[key] = df
 
 print(f"Loaded {len(all_data)} tables from {len(excel_files)} files")
-
+print("Available tables:")
+for key in all_data:
+    print(f"- {key}")
+    
 #q1_revenue = all_data['sales_Q1_Revenue']  # Access DataFrame
 
 metcon = all_data['UserId3017457_Metcon_250506.xlsx']
