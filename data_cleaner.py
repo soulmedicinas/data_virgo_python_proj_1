@@ -6,7 +6,11 @@ import os
 data_dir = 'data'
 
 # List all Excel files in your directory
+<<<<<<< HEAD
 excel_files = [f for f in os.listdir('data_dir') if f.endswith('.xlsx') or f.endswith('.xls')]
+=======
+excel_files = [f for f in os.listdir(data_dir) if f.endswith('.xlsx') or f.endswith('.xls')]
+>>>>>>> 5a7c09d (add Excel files)
 
 # Dictionary to store all DataFrames
 all_data = {}
@@ -22,7 +26,6 @@ print(f"Loaded {len(all_data)} tables from {len(excel_files)} files")
 print("Available tables:")
 for key in all_data:
     print(f"- {key}")
-    
 #q1_revenue = all_data['sales_Q1_Revenue']  # Access DataFrame
 
 metcon = all_data['UserId3017457_Metcon_250506.xlsx']
@@ -32,6 +35,10 @@ weightlifting = all_data['UserId3017457_Weightlifting_250506.xlsx']
 weightliftingTotal = all_data['UserId3017457_WeightliftingTotal_250506.xlsx']
 
 sheets = pd.read_excel(metcon, gymnastics, pRS, weightlifting, weightliftingTotal, sheet_name=None)  # Reads all sheets
+
+print(all_data.keys())
+print(all_data['UserId3017457_Weightlifting_250506_Sheet1'].head())
+
 
 # processing workflow
 def clean_data(df):
