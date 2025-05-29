@@ -1,96 +1,51 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 import os
 
+# Set display options (optional for better debugging)
+pd.set_option('display.max_columns', None)
+
+# Directory where Excel files are stored
 data_dir = 'data'
 
 # List all Excel files in your directory
-<<<<<<< HEAD
-excel_files = [f for f in os.listdir('data_dir') if f.endswith('.xlsx') or f.endswith('.xls')]
-=======
 excel_files = [f for f in os.listdir(data_dir) if f.endswith('.xlsx') or f.endswith('.xls')]
->>>>>>> 5a7c09d (add Excel files)
 
 # Dictionary to store all DataFrames
 all_data = {}
 
 for file in excel_files:
     file_path = os.path.join(data_dir, file)
-    sheets = pd.read_excel(file_path, sheet_name=None)  # Read all sheets from each file
+    sheets = pd.read_excel(file_path, sheet_name=None)  # Load all sheets
     for sheet_name, df in sheets.items():
-        key = f"{file[:-5]}_{sheet_name}" # Removes .xlsx extension
+        key = f"{os.path.splitext(file)[0]}_{sheet_name}"  # Clean filename
         all_data[key] = df
 
-print(f"Loaded {len(all_data)} tables from {len(excel_files)} files")
-print("Available tables:")
-for key in all_data:
-    print(f"- {key}")
-#q1_revenue = all_data['sales_Q1_Revenue']  # Access DataFrame
-
-metcon = all_data['UserId3017457_Metcon_250506.xlsx']
-gymnastics = all_data['UserId3017457_Gymnastics_250506.xlsx']
-pRS = all_data['UserId3017457_PRs_250506.xlsx']
-weightlifting = all_data['UserId3017457_Weightlifting_250506.xlsx']
-weightliftingTotal = all_data['UserId3017457_WeightliftingTotal_250506.xlsx']
-
-sheets = pd.read_excel(metcon, gymnastics, pRS, weightlifting, weightliftingTotal, sheet_name=None)  # Reads all sheets
-
-print(all_data.keys())
-print(all_data['UserId3017457_Weightlifting_250506_Sheet1'].head())
-
-
-# processing workflow
 def clean_data(df):
-    #Generic cleaning function template
-    # 1. Handle missing values
-    df = df.dropna(subset=['key_column'])
-    
-    # 2. Standardize formats
-    df['date'] = pd.to_datetime(df['date'], errors='coerce')
-    
-    # 3. Remove duplicates
-    return df.drop_duplicates()
+    # Example placeholder; update based on actual column names
+    if 'date' in df.columns:
+        df['date'] = pd.to_datetime(df['date'], errors='coerce')
+    df = df.dropna(subset=['date'])  # Ensure all rows have dates
+    df = df.drop_duplicates()
+    return df
 
-# Apply cleaning to all tables
-cleaned_data = {name: clean_data(df) for name, df in all_data.items()}
+cleaned_data = {name: clean_data(df.copy()) for name, df in all_data.items()}
 
 with pd.ExcelWriter('cleaned_combined.xlsx') as writer:
     for name, df in cleaned_data.items():
-        df.to_excel(writer, sheet_name=name[:31])  # Excel sheet name limit
+        df.to_excel(writer, sheet_name=name[:31])  # Sheet name max = 31 chars
 
-# Load all Excel sheets into a dictionary of DataFrames
-#file_path = "your_data.xlsx"
-#sheets = pd.read_excel(file_path, sheet_name=None)  # Reads all sheets
+# Initialize empty DataFrame
+combined_df = pd.DataFrame()
 
-print(f"Loaded sheets: {list(sheets.keys())}")
-# 1. Load Data
-# df1 = pd.read_csv('Stress_Level_v1.csv')
-# df2 = pd.read.csv('Stress_Level_v2.csv')
+# Loop through datasets and extract relevant columns
+for name, df in cleaned_data.items():
+    if {'date', 'weight', 'working sets', 'reps'}.issubset(df.columns):
+        temp_df = df[['date', 'weight', 'working sets', 'reps']]
+        temp_df['source'] = name  # Optional: track origin
+        combined_df = pd.concat([combined_df, temp_df], ignore_index=True)
 
-# 2. Basic Scatterplot
-plt.figure(figsize=(10, 6))
-plt.scatter(
-    x=df['column_x'], 
-    y=df['column_y'],
-    alpha=0.5  # Transparency for overlapping points
-)
-plt.title('Relationship Between X and Y')
-plt.xlabel('X Label')
-plt.ylabel('Y Label')
-plt.savefig('outputs/plots/basic_scatter.png')
-plt.close()
-
-# 2. Enhanced Scatterplot (with Seaborn)
-plt.figure(figsize=(10, 6))
-sns.scatterplot(
-    data=df,
-    x='column_x',
-    y='column_y',
-    hue='category_column',  # Color by a third variable
-    size='size_column',     # Optional: Vary point sizes
-    palette='viridis'       # Color scheme
-)
-plt.title('Enhanced Scatterplot')
-plt.savefig('outputs/plots/seaborn_scatter.png')
-plt.close()
+# Sort by date
+combined_df = combined_df.sort_values('date')
